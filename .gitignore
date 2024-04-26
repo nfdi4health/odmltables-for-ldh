@@ -1,0 +1,93 @@
+<<<<<<< HEAD
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Temporary files
+*~
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Jupyter Notebooks:
+*.ipynb_checkpoints
+
+# PyCharm project files:
+.idea/
+
+# Sphinx documentation
+doc/_build/
+
+# PyBuilder
+target/
+
+# OdML tables gui folder contains only svg images
+odmltables/gui/graphics/*.tex
+odmltables/gui/graphics/*.aux
+odmltables/gui/graphics/*.pdf
+odmltables/gui/graphics/*.dvi
+odmltables/gui/graphics/*.ps
+odmltables/gui/graphics/*.txt
+odmltables/gui/graphics/*.tex.backup
+odmltables/gui/testfiles/*
+doc/build/*
+doc/_build/*
+doc/requirements*.rst
+tutorials/tutorial-1_scenarios/complete_workflow
+
+# Project specific exclude of table formats
+*.csv
+*.xls
+*.odml
+*.conf
+
+# include single odml file for tutorial
+!examples/example1/example1-2.odml
+!examples/example1/example1-1.csv
+!examples/example1/example1-2.csv
+!doc/source/colors.xls
