@@ -34,8 +34,8 @@ class ConnectPage(QIWizardPage):
 
     def initializePage(self):
 
-        self.setTitle("Connect to the Local Data Hub")
-        self.setSubTitle("Please provide the URL and your API token to connect to the Local Data Hub.")
+        self.setTitle("Local Data Hub Connection<br>")
+        self.setSubTitle("Enter the URL and API token to establish a connection to the Local Data Hub.")
 
         self.ldh_label = QLabel('Local Data Hub (URL):')
         self.ldh_edit = QLineEdit()

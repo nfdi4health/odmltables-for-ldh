@@ -24,33 +24,46 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 class SelectProjectPage(QIWizardPage):
     def __init__(self, parent=None):
         super(SelectProjectPage, self).__init__(parent)
+        self.layout = None
+        self.button_group = None
         
 
-    def update_project_radio_buttons(self):
+    # def update_project_radio_buttons(self):
 
-        known_project_ids = [button.project for button in self.button_group.buttons()]
+    #     known_project_ids = [button.project for button in self.button_group.buttons()]
 
-        self.projects = get_all_projects()
-        for id, title in self.projects.items():
-            if not id in known_project_ids:
-                radiobutton = Qtw.QRadioButton(title)
-                radiobutton.project = id
-                radiobutton.toggled.connect(self.selectProject)
-                self.button_group.addButton(radiobutton)
-                self.layout.addWidget(radiobutton)
+    #     self.projects = get_all_projects()
+    #     for id, title in self.projects.items():
+    #         if not id in known_project_ids:
+    #             radiobutton = Qtw.QRadioButton(title)
+    #             radiobutton.project = id
+    #             radiobutton.toggled.connect(self.selectProject)
+    #             self.button_group.addButton(radiobutton)
+    #             self.layout.addWidget(radiobutton)
 
-        # resize the page to fit content
-        self.resize(self.layout.sizeHint())
+    #     # resize the page to fit content
+    #     self.resize(self.layout.sizeHint())
 
+    def clear_layout(self):
+        if self.layout is not None and isinstance(self.layout, Qtw.QLayout):
+            while self.layout.count():
+                child = self.layout.takeAt(0)
+                if child.widget():
+                    child.widget().deleteLater()
 
     def initializePage(self):
-
-        self.layout = Qtw.QVBoxLayout()
-        self.setLayout(self.layout)
+        # Ensure the layout is set up correctly
+        if not isinstance(self.layout, Qtw.QVBoxLayout):
+            self.layout = Qtw.QVBoxLayout()
+            self.setLayout(self.layout)
+        
+        # Clear the existing layout before initializing
+        self.clear_layout()
+        
         self.projects = get_all_projects()
 
-        self.setTitle("Select Project")
-        self.setSubTitle("Please choose the Projct you want to attach the data to or create a new Project for that purpose.")
+        self.setTitle("Choose a Project<br>")
+        self.setSubTitle("Select an existing project to attach the data or create a new project.")
 
         self.title_label = Qtw.QLabel("You are involved in the following Projects: \n" + 
                                 "Choose the project you want to upload data to or create new project")
@@ -62,7 +75,7 @@ class SelectProjectPage(QIWizardPage):
         self.layout.addLayout(self.grid)
 
         self.button_group = QtWidgets.QButtonGroup(self)
-        #for id, title in self.projects:
+        
         for id, title in self.projects.items():
             radiobutton = Qtw.QRadioButton(title)
             radiobutton.project = id
@@ -70,43 +83,38 @@ class SelectProjectPage(QIWizardPage):
             self.button_group.addButton(radiobutton)
             self.layout.addWidget(radiobutton)
 
-
         self.newproject_button = Qtw.QPushButton("Create New Project")
         self.newproject_button.clicked.connect(self.createProject)
         #self.newproject_button.setDisabled(True)
         self.layout.addWidget(self.newproject_button)
         #self.setLayout(layout)
 
-
+    def update_project_radio_buttons(self):
+        self.initializePage()
 
     def selectProject(self):
         radioButton = self.sender()
         if radioButton.isChecked():
             project = fetch_project(radioButton.project)
             self.settings.set_project(project)
-
+            # Save the selected project ID to use later in the wizard
+            self.wizard().setProperty('selected_project_id', radioButton.project)
 
     def createProject(self):
         self.w = CreateEntityDialog(self, self.on_dialog_closed, InstanceType.PROJECT)
         self.w.exec_()
 
-
     def on_dialog_closed(self, result):
         if result == Qtw.QDialog.Accepted:
             print("Dialog accepted.")
             self.update_project_radio_buttons()
-
         elif result == Qtw.QDialog.Rejected:
             print("Dialog rejected.")
         else:
             print("Dialog closed.")
-
 
     def validatePage(self):
         if self.settings.project is None:
             Qtw.QMessageBox.warning(self, 'No Project selected', 'Please select a project or create a new one.')
             return False
         return True
-
-    
-    

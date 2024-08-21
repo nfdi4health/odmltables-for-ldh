@@ -2,6 +2,7 @@ from enum import Enum
 
 import PyQt5.QtWidgets as Qtw
 import PyQt5.QtGui as QtGui
+import webbrowser
 
 class InstanceType(Enum):
     PROJECT = 1
@@ -48,6 +49,22 @@ class Relationship():
 
     def __init__(self) -> None:
         pass
+
+
+class EditableTextBrowser(Qtw.QTextBrowser):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setReadOnly(False)
+
+    def mousePressEvent(self, event):
+        anchor = self.anchorAt(event.pos())
+        if anchor:
+            webbrowser.open(anchor)
+        else:
+            super().mousePressEvent(event)
+
+    def keyPressEvent(self, event):
+        super().keyPressEvent(event)
 
 
 class LDHEntitiy():
@@ -165,8 +182,9 @@ class LDHEntitiy():
 
             # TODO enable multi-line edits and more edits # maybe a get textEdit for attribute - more elegant
             if attribute.key == "description":
-                temp_edit = Qtw.QPlainTextEdit()
+                temp_edit = EditableTextBrowser()
                 temp_edit.resize(400, 200)
+                # temp_edit.setOpenExternalLinks(True)
             else:
                 temp_edit = Qtw.QLineEdit()
             attribute_dict[attribute.key] = temp_edit

@@ -14,6 +14,7 @@ class QIWizardPage(QWizardPage):
         super(QIWizardPage, self).__init__(parent)
         self.settings = settings
 
+        
 
 def clearLayout(layout):
     for i in reversed(list(range(layout.count()))):

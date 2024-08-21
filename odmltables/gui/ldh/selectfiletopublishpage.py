@@ -26,9 +26,8 @@ class SelectFileToPublishPage(QIWizardPage):
         self.layout = Qtw.QVBoxLayout()
         self.setLayout(self.layout)
 
-        self.setTitle("Select an input file")
-        self.setSubTitle("Select the files you want to merge and specify the"
-                         " merge mode and location to save your file ")
+        self.setTitle("File Selection<br>")
+        self.setSubTitle("Choose the odML file to merge, select the merge mode, and specify the save location.")
 
         vbox = self.layout
 

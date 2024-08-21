@@ -119,7 +119,7 @@ class DataCollectionDescription():
         self.description = ""
         
         species = self.odML_df["Subject - Species"].unique()
-        self.description += "Demography of Dataset:\n\n"
+        self.description += "<center>Demography of Dataset:</center><br><br>"
         for s in species:
             self.description += self.create_species_description(s)
 

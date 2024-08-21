@@ -32,9 +32,11 @@ class SaveSelectionPage(QIWizardPage):
         self.setLayout(self.layout)
 
     def initializePage(self):
+        # Clear the existing layout contents first
+        clearLayout(self.layout)
 
-        self.setTitle("Summary of Previous Selections")
-        self.setSubTitle("Please provide file-paths to save the cleaned generated files to.")
+        self.setTitle("Configure File Saving<br>")
+        self.setSubTitle("Specify the file paths for saving the cleaned and generated files.")
 
         self.project_label = QLabel('Project: ' + self.settings.project.get_title())
         #self.investigation_label = QLabel('Investigation:') # + self.settings.investigation)
@@ -54,6 +56,17 @@ class SaveSelectionPage(QIWizardPage):
         self.layout.addWidget(self.save_cleaned_odMLSummary_button)
 
         # cleaned odML summary
+
+    def clearLayout(layout):
+        if layout is not None:
+            while layout.count():
+                item = layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+                elif item.layout() is not None:
+                    clearLayout(item.layout())
+
         
         
     def save_cleaned_odMLSummary(self):

@@ -6,6 +6,8 @@ from .data.ldh_entitiy import LDHEntitiy, InstanceType
 import PyQt5.QtWidgets as Qtw
 import PyQt5.QtGui as QtGui
 
+from .data.ldh_entitiy import EditableTextBrowser
+
 client = None
 
 def check_credentials(url, apiToken):
@@ -26,11 +28,13 @@ def get_first_institution_of_user():
     response = client.get("institutions/" + str(id))
     name = response['data']['attributes']['title']
     return id, name
+    # return 1, "Default Institution"
 
 def get_first_user():
     response = client.get("people/current")
     id = response['data']['id']
     return id
+    # return 1
 
 def get_all_projects():
     # Get all pages
@@ -44,6 +48,7 @@ def get_all_projects():
         project_dict[project_id] = project.get_title()
 
     return project_dict
+    # return {1: "Default Project"}
 
 
 def get_insitution_name(institution_id):
@@ -66,10 +71,12 @@ def create_project(project:Project):
 def update_project(project:Project, attribute_dict):
     
     for key, edit in attribute_dict.items():
-            if type(edit) == Qtw.QPlainTextEdit:
-                project.change_attribute_value(key, edit.toPlainText())
-            else:
-                project.change_attribute_value(key, edit.text())
+        if type(edit) == Qtw.QPlainTextEdit:
+            project.change_attribute_value(key, edit.toPlainText())
+        elif isinstance(edit, EditableTextBrowser):
+            project.change_attribute_value(key, edit.toPlainText())
+        else:
+            project.change_attribute_value(key, edit.text())
 
     project_json = project.convertToJson()
     response = client.patch("projects/" + project.id, json=project_json)
@@ -143,7 +150,12 @@ def fetch_project(project_id):
 def create_entity(entity, attribute_dict):
 
         for key, edit in attribute_dict.items():
-            if type(edit) == Qtw.QPlainTextEdit:
+            # if type(edit) == Qtw.QPlainTextEdit:
+            #     entity.change_attribute_value(key, edit.toPlainText())
+            # else:
+            #     entity.change_attribute_value(key, edit.text())
+
+            if isinstance(edit, Qtw.QPlainTextEdit) or isinstance(edit, EditableTextBrowser):
                 entity.change_attribute_value(key, edit.toPlainText())
             else:
                 entity.change_attribute_value(key, edit.text())
@@ -170,10 +182,10 @@ def create_entity(entity, attribute_dict):
 def create_and_upload_data_file(data_file, attribute_dict):
 
     for key, edit in attribute_dict.items():
-            if type(edit) == Qtw.QPlainTextEdit:
-                data_file.change_attribute_value(key, edit.toPlainText())
-            else:
-                data_file.change_attribute_value(key, edit.text())
+        if isinstance(edit, Qtw.QPlainTextEdit) or isinstance(edit, EditableTextBrowser):
+            data_file.change_attribute_value(key, edit.toPlainText())
+        else:
+            data_file.change_attribute_value(key, edit.text())
 
     data_file_json = data_file.convertToJson()
 
@@ -184,11 +196,14 @@ def create_and_upload_data_file(data_file, attribute_dict):
         data_file.set_id(data_file_id)
         response = client.upload_file(link_for_content_blob, data_file.file_path)
         if response.status_code == 200:
-            return True, data_file_id
+            url = f"http://localhost:3000/data_files/{data_file_id}?version=1"
+            return True, url
         else:
             print("Error uploading file")
             return False, ""
     else:
         print("Error creating data file")
         return False, ""
+
+    # return True, 1
     

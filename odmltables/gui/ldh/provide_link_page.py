@@ -33,9 +33,11 @@ class ProvideLinkPage(QIWizardPage):
         self.setLayout(self.layout)
 
     def initializePage(self):
+        # Clear the existing layout contents first
+        clearLayout(self.layout)
 
-        self.setTitle("Provide Link to Location of \"heavy\" Data Set")
-        self.setSubTitle("Please provide the link to the location the data set described by the odML file is published. E.g. on G-Node.")
+        self.setTitle("Specify Dataset URL<br>")
+        self.setSubTitle("Enter the URL where the dataset described by the odML file is hosted, such as on G-Node.")
 
         # checkbox with label "The data set is not publicly available. Please contact the authors."
         self.not_public_radio = Qtw.QRadioButton("The data set is not publicly available. Please contact the authors.")
@@ -50,6 +52,15 @@ class ProvideLinkPage(QIWizardPage):
 
         self.layout.addLayout(hbox)
 
+    def clearLayout(layout):
+        if layout is not None:
+            while layout.count():
+                item = layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+                elif item.layout() is not None:
+                    clearLayout(item.layout())
 
     def validatePage(self):
 
@@ -62,6 +73,6 @@ class ProvideLinkPage(QIWizardPage):
         if self.not_public_radio.isChecked():
             self.settings.set_data_set_link_text("The data set is not publicly available. Please contact the authors.")
         else:
-            self.settings.set_data_set_link_text("The data set described by this meta-data is avaiable at: " + self.link_edit.text())
+            self.settings.set_data_set_link_text("The data set described by this meta-data is available at: " + self.link_edit.text())
 
         return True

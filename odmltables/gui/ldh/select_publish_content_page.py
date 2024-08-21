@@ -37,8 +37,8 @@ class SelectContentPage(QIWizardPage):
                                 'SectionName', 'SectionType',
                                 'SectionDefinition']
 
-        self.setTitle("Select data fields for sharing")
-        self.setSubTitle("Use the checkboxes to select the data fields you want to share.")
+        self.setTitle("Data Field Selection<br>")
+        self.setSubTitle("Choose the data fields you wish to share by using the checkboxes.")
 
         self.search_words = []
         self.search_prop_words = {}
@@ -74,16 +74,22 @@ class SelectContentPage(QIWizardPage):
                                                Qtw.QSizePolicy.Expanding)
 
         self.odmltree = Qtw.QTreeWidget()
-        self.odmltree.setColumnCount(2)
+        self.odmltree.setColumnCount(len(self.odmltreeheaders))
         self.odmltree.setHeaderLabels(self.odmltreeheaders)
-        self.odmltree.setSelectionMode(3)
+        self.odmltree.setSelectionMode(Qtw.QAbstractItemView.MultiSelection)
         self.odmltree.setMinimumWidth(500)
         self.odmltree.setSizePolicy(Qtw.QSizePolicy.Expanding,
                                     Qtw.QSizePolicy.Expanding)
+        self.odmltree.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.odmltree.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        columnwidths = [50] * len(self.odmltreeheaders)
-        columnwidths[0:3] = [250, 100, 100]
-        [self.odmltree.setColumnWidth(i, w) for i, w in enumerate(columnwidths)]
+        # columnwidths = [50] * len(self.odmltreeheaders)
+        # columnwidths[0:3] = [250, 100, 100]
+        # [self.odmltree.setColumnWidth(i, w) for i, w in enumerate(columnwidths)]
+
+        # Connect signals for dynamically resizing columns
+        self.odmltree.itemExpanded.connect(self.resize_content_column)
+        self.odmltree.itemCollapsed.connect(self.resize_content_column)
 
         vbox_treerepresentation.addWidget(self.odmltree)
 
@@ -104,6 +110,10 @@ class SelectContentPage(QIWizardPage):
         self.load_odml()
         self.odmltree.expandToDepth(0)
         
+    def resize_content_column(self):
+        # Resize each column in the QTreeWidget to fit its contents
+        for column in range(self.odmltree.columnCount()):
+            self.odmltree.resizeColumnToContents(column)
 
 
     # interface in gui (see http://lxml.de/xpathxslt.html)
@@ -126,6 +136,9 @@ class SelectContentPage(QIWizardPage):
         self.odmltree.clear()
         self.create_sectiontree(self.odmltree, table)
         self.create_proptree(self.odmltree, table)
+
+        # Resize columns to fit new content after updating the tree
+        self.resize_content_column()
 
         self.odmltree.expandToDepth(0)
 

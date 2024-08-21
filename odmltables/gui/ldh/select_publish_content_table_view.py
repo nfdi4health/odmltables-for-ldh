@@ -60,9 +60,12 @@ class PandasTableModel(QStandardItemModel):
                 
                 
                 item = QStandardItem("{}".format(row[column]))
-                item.setCheckable(True)
+
                 if column == "RecordingID":
-                    item.setCheckable(False)
+                    data_col.append(item)
+                    continue
+
+                item.setCheckable(True)
                 
                 
                 if path:
@@ -121,9 +124,11 @@ class SelectContentTableViewPage(QIWizardPage):
 
     def initializePage(self):
         #self.update_attributes()
+        # Clear the layout before setting up the page again
+        clearLayout(self.hbox)
 
-        self.setTitle("Summary Table of cleaned odML file")
-        self.setSubTitle("Please confirm, that all sensitive fields have been deselected and edit if necessary.")
+        self.setTitle("Review Cleaned Data<br>")
+        self.setSubTitle("Ensure all sensitive fields are deselected before proceeding. Make any necessary edits.")
 
         self.df = self.settings.odml_selection.transform_to_single_table()
         self.display_df(self.df)
@@ -131,6 +136,10 @@ class SelectContentTableViewPage(QIWizardPage):
 
 
     def display_df(self, df):
+        # Clear previous instances if they exist
+        if hasattr(self, 'table_view'):
+            self.table_view.deleteLater()
+
         # Create the pandas model
         self.model = PandasTableModel(df, self.settings.odml_selection)
         self.path_table_item_map = self.model.get_path_table_item_map()
@@ -142,6 +151,9 @@ class SelectContentTableViewPage(QIWizardPage):
         self.table_view.setSizePolicy(sizePolicy)
         self.table_view.setEditTriggers(Qtw.QAbstractItemView.NoEditTriggers)
         self.table_view.show()
+
+        # Adjust column widths to fit content
+        self.table_view.resizeColumnsToContents()
 
         self.model.itemChanged.connect(self.updateCheckedStatus)
         self.table_view.setUpdatesEnabled(True)

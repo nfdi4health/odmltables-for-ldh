@@ -88,7 +88,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         centralWidget = QtWidgets.QWidget()
         w, h = 450, 650
-        self.setFixedSize(w, h)
+        # self.setFixedSize(w, h)
         self.setCentralWidget(centralWidget)
 
         # background color
