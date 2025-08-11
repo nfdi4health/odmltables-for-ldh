@@ -17,7 +17,13 @@ In addition to the [Python API](https://www.python.org/), odMLtables provides it
 
 ## Publications
 
-The concept that the odMLtabled for LDH follows, has been presented as a poster at MIE2024. The poster and corresponding abstract can be found under [the related publications folder](./publications/).
+A techinal case report describing odmltables-for-ldh has been published [here](https://doi.org/10.3233/shti240836).
+The concept that the odMLtabled for LDH follows, has been presented as a talk at GMDS 2024 and in poster at MIE2024. The slides of the talk, poster and corresponding abstract can be found under [the related publications folder](./publications/).
+
+## How to contribute
+
+Please feel free to fork this or submit pull requests to this repository. We are more than happy to link and include further extensions of this tool, e.g. including support for further odMLtabels from different domains than micorneurogrpahy here.
+Please reach out to Ekaterina Kutafina or Mayra Elwes for questions and collaborations.
 
 
 #
